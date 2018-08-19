@@ -63,8 +63,27 @@ public class BuscarTabFragment extends SupportMapFragment  implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        LatLng ubicacion = null;
+        int latitud, longitud;
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            latitud = cursor.getInt(cursor.getColumnIndex("latitud"));
+            longitud = cursor.getInt(cursor.getColumnIndex("longitud"));
+
+            ubicacion = new LatLng(latitud, longitud);
+            marker = new MarkerOptions().position(ubicacion);
+            marker.title(String.valueOf(cursor.getInt(cursor.getColumnIndex("idBarbero"))));
+            marker.snippet(String.valueOf(cursor.getInt(cursor.getColumnIndex("idBarbero"))));
+            mMap.addMarker(marker);
+            cursor.moveToNext();
+        }
+
+        if (ubicacion!=null){
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(ubicacion));
+        }
+
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
+        /*LatLng sydney = new LatLng(-34, 151);
         marker = new MarkerOptions().position(sydney);
         marker.title("En caucasia");
         mMap.addMarker(marker);
@@ -74,7 +93,7 @@ public class BuscarTabFragment extends SupportMapFragment  implements OnMapReady
         marker.title("En titi");
         mMap.addMarker(marker);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));]*/
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener(){
 
@@ -83,15 +102,15 @@ public class BuscarTabFragment extends SupportMapFragment  implements OnMapReady
                 /*Intent intent = new Intent(MyMapsActivity.this,DisplayMessageActivity.class);
                 intent.putExtra("Mensaje1", marker.getTitle());
                 startActivity(intent);*/
-                //Toast.makeText(getApplicationContext(),"alerta",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),marker.getId(),Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    /*@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.buscar_fragment, container, false);
-    }*/
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        barberDbAdapter.close();
+
+    }
 }
