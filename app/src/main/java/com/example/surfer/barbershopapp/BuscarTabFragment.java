@@ -65,35 +65,33 @@ public class BuscarTabFragment extends SupportMapFragment  implements OnMapReady
 
         LatLng ubicacion = null;
         int latitud, longitud;
+        String nombreBarbero = "";
+        int idBarbero = 0;
+        Cursor cursorBarbero;
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
             latitud = cursor.getInt(cursor.getColumnIndex("latitud"));
             longitud = cursor.getInt(cursor.getColumnIndex("longitud"));
-
             ubicacion = new LatLng(latitud, longitud);
+
+            idBarbero = cursor.getInt(cursor.getColumnIndex("idBarbero"));
+            cursorBarbero = barberDbAdapter.fetchBarber(idBarbero);
+            while (!cursorBarbero.isAfterLast()){
+                nombreBarbero = cursorBarbero.getString(cursorBarbero.getColumnIndex("nombres"));
+                cursorBarbero.moveToNext();
+            }
+
             marker = new MarkerOptions().position(ubicacion);
-            marker.title(String.valueOf(cursor.getInt(cursor.getColumnIndex("idBarbero"))));
-            marker.snippet(String.valueOf(cursor.getInt(cursor.getColumnIndex("idBarbero"))));
-            mMap.addMarker(marker);
+
+            marker.title(nombreBarbero);
+            marker.snippet("Selecciona para un servicio");
+            mMap.addMarker(marker).setTag(String.valueOf(idBarbero));
             cursor.moveToNext();
         }
 
         if (ubicacion!=null){
             mMap.moveCamera(CameraUpdateFactory.newLatLng(ubicacion));
         }
-
-        // Add a marker in Sydney and move the camera
-        /*LatLng sydney = new LatLng(-34, 151);
-        marker = new MarkerOptions().position(sydney);
-        marker.title("En caucasia");
-        mMap.addMarker(marker);
-
-        LatLng titiribi = new LatLng(-34, 90);
-        marker = new MarkerOptions().position(titiribi);
-        marker.title("En titi");
-        mMap.addMarker(marker);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));]*/
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener(){
 
@@ -102,7 +100,8 @@ public class BuscarTabFragment extends SupportMapFragment  implements OnMapReady
                 /*Intent intent = new Intent(MyMapsActivity.this,DisplayMessageActivity.class);
                 intent.putExtra("Mensaje1", marker.getTitle());
                 startActivity(intent);*/
-                Toast.makeText(getActivity(),marker.getId(),Toast.LENGTH_LONG).show();
+                String idBarbero = String.valueOf(marker.getTag());
+                Toast.makeText(getActivity(),idBarbero,Toast.LENGTH_LONG).show();
             }
         });
     }

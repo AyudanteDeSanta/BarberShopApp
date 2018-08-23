@@ -202,11 +202,43 @@ public class BarberDbAdapter {
         }
     }
 
+    /**Localizaciones*/
     public Cursor fetchAllLocalizations() {
 
         return mDb.query(DATABASE_TABLE_LOCALITATION, new String[] {"_id", "latitud",
                 "longitud","idBarbero"}, null, null, null, null, null);
     }
+
+
+    /*Barberos*/
+    public Cursor fetchBarber(long rowId) throws SQLException {
+        Cursor mCursor =
+
+                mDb.query(true, DATABASE_TABLE_BARBERS, new String[] {"_id",
+                                "nombres"}, "_id" + "=" + rowId, null,
+                        null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+
+    }
+
+
+    /*Citas*/
+    public Cursor fetchCitas(long rowId) throws SQLException {
+        Cursor mCursor =
+
+                mDb.query(true, DATABASE_TABLE_AGENDA, new String[] {"_id",
+                                "fecha","idUsuario","idLocalizacion","precio"}, "idUsuario" + "=" + rowId, null,
+                        null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+
+    }
+
 
     /**
      * Constructor - takes the context to allow the database to be
