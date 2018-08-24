@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BarberShopApp</string>
+    <string name="app_name">BarberShop</string>
     <string name="title_home">Home</string>
     <string name="title_buscar">Buscar</string>
     <string name="title_usuario">Usuario</string>

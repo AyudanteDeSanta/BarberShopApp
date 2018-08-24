@@ -26,7 +26,7 @@ public class BarberDbAdapter {
 
     private static final String DATABASE_CREATE_TABLE_LOCALITATION =
             "create table localizaciones (_id integer primary key, "
-                    + "latitud integer not null, longitud integer not null, "
+                    + "latitud double not null, longitud double not null, "
                     + "idBarbero integer not null);";
 
     private static final String DATABASE_CREATE_TABLE_BARBERS =
@@ -34,7 +34,7 @@ public class BarberDbAdapter {
                     + "nombres text not null);";
 
     private static final String DATABASE_CREATE_TABLE_AGENDA =
-            "create table agendas (_id integer primary key, "
+            "create table agendas (_id integer primary key autoincrement, "
                     + "fecha long not null, idUsuario integer, "
                     + "idLocalizacion integer not null, precio integer);";
 
@@ -50,7 +50,7 @@ public class BarberDbAdapter {
     private static final String DATABASE_TABLE_AGENDA = "agendas";
 
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private final Context mCtx;
 
@@ -132,36 +132,36 @@ public class BarberDbAdapter {
             ContentValues registro = new ContentValues();
 
             registro.put("_id",1);
-            registro.put("latitud",-34);
-            registro.put("longitud",151);
+            registro.put("latitud",6.262542D);
+            registro.put("longitud",-75.594802D);
             registro.put("idBarbero",1);
             db.insert(DATABASE_TABLE_LOCALITATION, null,registro);
 
             registro = new ContentValues();
             registro.put("_id",2);
-            registro.put("latitud",-34);
-            registro.put("longitud",141);
+            registro.put("latitud",6.26229D);
+            registro.put("longitud",-75.59428D);
             registro.put("idBarbero",2);
             db.insert(DATABASE_TABLE_LOCALITATION,null,registro);
 
             registro = new ContentValues();
             registro.put("_id",3);
-            registro.put("latitud",-34);
-            registro.put("longitud",131);
+            registro.put("latitud",6.262013D);
+            registro.put("longitud",-75.594038D);
             registro.put("idBarbero",3);
             db.insert(DATABASE_TABLE_LOCALITATION,null,registro);
 
             registro = new ContentValues();
             registro.put("_id",4);
-            registro.put("latitud",-34);
-            registro.put("longitud",121);
+            registro.put("latitud",6.261918D);
+            registro.put("longitud",-75.593785D);
             registro.put("idBarbero",4);
             db.insert(DATABASE_TABLE_LOCALITATION,null,registro);
 
             registro = new ContentValues();
             registro.put("_id",5);
-            registro.put("latitud",-34);
-            registro.put("longitud",111);
+            registro.put("latitud",6.261568D);
+            registro.put("longitud",-75.593044D);
             registro.put("idBarbero",5);
             db.insert(DATABASE_TABLE_LOCALITATION,null,registro);
         }
@@ -172,18 +172,16 @@ public class BarberDbAdapter {
 
             long fechaInicial = 1533779575576L;
 
-            registro.put("_id",1);
             registro.put("fecha",fechaInicial);
             registro.put("idUsuario",1);
             registro.put("idLocalizacion",1);
             registro.put("precio",10000);
             db.insert(DATABASE_TABLE_AGENDA, null,registro);
 
-            registro.put("_id",2);
             registro.put("fecha",fechaInicial);
             registro.put("idUsuario",1);
             registro.put("idLocalizacion",3);
-            registro.put("precio",10000);
+            registro.put("precio",15000);
             db.insert(DATABASE_TABLE_AGENDA, null,registro);
         }
 
@@ -239,6 +237,25 @@ public class BarberDbAdapter {
 
     }
 
+
+    /*Agenda*/
+    public Cursor fetchAllAppoitment(long f) {
+
+        return mDb.query(DATABASE_TABLE_AGENDA, new String[] {"fecha"},
+                "fecha" + "=" + f, null, null, null, null);
+    }
+
+    public long createAppointment(Long fecha, Integer idUsuario, Integer idLocalizacion, Integer precio) {
+        ContentValues registro = new ContentValues();
+
+        registro.put("fecha", fecha);
+        registro.put("idUsuario", idUsuario);
+        registro.put("idLocalizacion", idLocalizacion);
+        registro.put("precio", precio);
+
+
+        return mDb.insert(DATABASE_TABLE_AGENDA, null, registro);
+    }
 
     /**
      * Constructor - takes the context to allow the database to be
